@@ -18,13 +18,13 @@ import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
-  private News news;
+    private News news;
     Context context;
 
 
-    public RecyclerAdapter(News news,Context context) {
-        this.context=context;
-        this.news=news;
+    public RecyclerAdapter(News news, Context context) {
+        this.context = context;
+        this.news = news;
     }
 
     @Override
@@ -36,20 +36,35 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        String UrlToImage=news.getArticles().get(position).getUrlToImage();
-        if (UrlToImage==null) {
-            Picasso.with(context).load("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSS6wnfu9372TIPwu3cOcY5-FbxNpSmTMPSfsl2fVWSBRnWxMZ2XQ").into(holder.image);
+        String UrlToImage = news.getArticles().get(position).getUrlToImage();
+        if (UrlToImage == null) {
+            Picasso.get().load("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSS6wnfu9372TIPwu3cOcY5-FbxNpSmTMPSfsl2fVWSBRnWxMZ2XQ").into(holder.image);
         } else {
-            Picasso.with(context).load(news.getArticles().get(position).getUrlToImage()).into(holder.image);
+            Picasso.get().load(news.getArticles().get(position).getUrlToImage()).into(holder.image);
+
+
         }
-        holder.name.setText(news.getArticles().get(position).getTitle());
-        holder.author.setText(news.getArticles().get(position).getSource().getName());
+
+        String name = news.getArticles().get(position).getTitle();
+        if ((name != null)) {
+            holder.name.setText(name);
+        } else {
+            holder.name.setText("Неизвестный");
+        }
+
+        String autor = news.getArticles().get(position).getSource().getName();
+        if (autor != null) {
+            holder.author.setText(autor);
+        } else {
+            holder.author.setText("Неизвестный");
+        }
+
 
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void OnClick(View view, int position, boolean isLongClick) {
-                Intent intent= new Intent(context, Detail_NEWS_Activity.class);
-                intent.putExtra("url",news.getArticles().get(position).getUrl());
+                Intent intent = new Intent(context, Detail_NEWS_Activity.class);
+                intent.putExtra("url", news.getArticles().get(position).getUrl());
                 context.startActivity(intent);
             }
         });
@@ -58,11 +73,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return news.getTotalResults();
+        return
+                news.getArticles().size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView name,author;
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView name, author;
         CircleImageView image;
         ItemClickListener itemClickListener;
 
@@ -72,15 +88,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         public ViewHolder(View view) {
             super(view);
-            name=view.findViewById(R.id.source_name);
-            image=view.findViewById(R.id.source_image);
-            author=view.findViewById(R.id.source_author);
+            name = view.findViewById(R.id.source_name);
+            image = view.findViewById(R.id.source_image);
+            author = view.findViewById(R.id.source_author);
             view.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            itemClickListener.OnClick(view,getAdapterPosition(),false);
+            itemClickListener.OnClick(view, getAdapterPosition(), false);
         }
     }
 }
